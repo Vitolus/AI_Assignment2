@@ -4,12 +4,9 @@ from sklearn import svm
 
 
 class Svm(Classifier):
-    def __init__(self):
+    def __init__(self, hyperparams):  # gamma is the kernel coefficient
         super.__init__(self)  # call parent constructor
-        self.hyperparams = {  # hyperparameters to test
-            'C': [1, 10, 100, 1000],  # C is the penalty parameter of the error term
-            'gamma': [0.001, 0.0001],  # gamma is the kernel coefficient
-        }
+        self.hyperparams = hyperparams  # set hyperparameters
         self.model = GridSearchCV(svm.linearSVC(), self.hyperparams, cv=10)  # 10-fold cross validation
 
     def train(self):  # train the model
