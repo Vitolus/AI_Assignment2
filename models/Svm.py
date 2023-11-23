@@ -1,20 +1,21 @@
-import Classifier
+from models.Classifier import Classifier
 from sklearn.model_selection import GridSearchCV
 from sklearn import svm
 
 
 class Svm(Classifier):
-    def __init__(self, hyperparams):  # gamma is the kernel coefficient
-        super.__init__(self)  # call parent constructor
-        self.hyperparams = hyperparams  # set hyperparameters
-        self.model = GridSearchCV(svm.linearSVC(), self.hyperparams, cv=10)  # 10-fold cross validation
+    def __init__(self, hyperparams):
+        super().__init__()  # call parent constructor
+        # self.X_train, self.X_test, self.y_train, self.y_test self.results are inherited from Classifier
+        self.model = GridSearchCV(svm.LinearSVC(dual="auto"), hyperparams, cv=10, return_train_score=True, verbose=3)
 
-    def train(self):  # train the model
+    def train(self):
         self.model.fit(self.X_train, self.y_train)  # train the model
-        return self.model.best_params_  # return the best hyperparameters
+        self.results = self.model.cv_results_
+        return self.model.best_estimator_, self.model.best_params_  # set the best hyperparameters
 
-    def predict(self, x):  # predict the label of x
+    def predict(self, x):
         return self.model.predict(x)  # return the predicted label
 
-    def _test(self):  # test the model
+    def test(self):  # HOF to test the model
         return self.predict(self.X_test)  # return the predicted labels of the test set

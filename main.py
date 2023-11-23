@@ -1,8 +1,9 @@
-import models.Svm as svm
+import models.Svm as Svm
 
 
 if __name__ == '__main__':
-    hyperparams = {'C': [1, 10, 100, 1000], 'gamma': [0.1, 0.01, 0.001, 0.0001]}
-    model = svm.Svm(hyperparams)
-    model.train()
-    model.test()
+    hyperparams = {'C': [0.1, 1]}  # C is the regularization parameter
+    svm_clf = Svm.Svm(hyperparams)  # create an instance of the Svm class
+    estimator, params = svm_clf.train()  # train the model
+    print(svm_clf.test())  # test the model
+    print(svm_clf.get_results())  # print the results
