@@ -9,7 +9,7 @@ Train the following classifiers on the dataset:
 * Random forests
 * Naive Bayes classifier where each pixel is distributed according to a Beta distribution of parameters &alpha;,
   &beta;:\
-  d(x; a, b)= 
+  d(x; a, b)=
   <div class="frac"><span>&Gamma;(&alpha;+&beta;)</span>
     <span class="symbol">/</span>
     <span class="bottom">&Gamma;(&alpha;)&Gamma;(&beta;)</span></div>
@@ -42,6 +42,18 @@ There are several hyperparameters that we can tune:
 
 * `coef0`: This is the independent term in the kernel function. It is only significant in 'poly' and 'sigmoid'.
 
+There are several alternatives for hyperparameter tuning, but for binary classification problems, the most simple ones
+are:
+
+* **Grid search**: it is an exhaustive search over specified parameter values for an estimator. It is done by using the
+  `GridSearchCV` class, which takes a dictionary that describes the parameters that could be tried on a model to train
+  it. The grid search then trains the model with each combination of parameters and returns the best one.
+
+* **Random search**: it is an alternative to grid search. It is a technique where random combinations of the
+  hyperparameters are used to find the best solution for the built model. It is done by using the `RandomizedSearchCV`
+  class, which takes a dictionary that describes the parameters that could be tried on a model to train it. The random
+  search then trains the model with a random combination of parameters and returns the best one.
+
 ### 3.1.1. Linear kernel
 
 #### 3.1.1.1. Formalization
@@ -49,7 +61,8 @@ There are several hyperparameters that we can tune:
 Both `LinearSVC` and `SVC(kernel='linear')` can be used for binary classification problems. The choice between the two
 often depends on the size of the dataset and the specific requirements of the problem:
 
-* `LinearSVC`: it uses a one-vs-rest strategy for multi-class problems, but for binary classification, this distinction does
+* `LinearSVC`: it uses a one-vs-rest strategy for multi-class problems, but for binary classification, this distinction
+  does
   not matter. It can be faster to train on large datasets because it scales linearly with the number of data points.
 
 * `SVC(kernel='linear')`: it uses a one-vs-one strategy for multi-class problems. For binary classification, this is

@@ -7,7 +7,8 @@ class Svm(Classifier):
     def __init__(self, hyperparams):
         super().__init__()  # call parent constructor
         # self.X_train, self.X_test, self.y_train, self.y_test self.results are inherited from Classifier
-        self.model = GridSearchCV(svm.LinearSVC(dual="auto"), hyperparams, cv=10, return_train_score=True, verbose=3)
+        self.model = GridSearchCV(svm.LinearSVC(random_state=42), hyperparams, cv=10, n_jobs=-1,
+                                  return_train_score=False, verbose=3)
 
     def train(self):
         self.model.fit(self.X_train, self.y_train)  # train the model
