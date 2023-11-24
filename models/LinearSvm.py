@@ -3,7 +3,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn import svm
 
 
-class Svm(Classifier):
+class LinearSvm(Classifier):
     def __init__(self, hyperparams):
         super().__init__()  # call parent constructor
         # self.X_train, self.X_test, self.y_train, self.y_test self.results are inherited from Classifier
