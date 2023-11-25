@@ -38,13 +38,12 @@ def rbf_svm():
 
 def random_forest():
     # create an instance of the RandForest class
-    classifier = Rf.RandForest({'n_estimators': [10, 100, 1000], 'criterion': ['log_loss', 'entropy'],
-                                'max_features': ['sqrt', 'log2', None], 'bootstrap': [True, False]})
+    classifier = Rf.RandForest({'n_estimators': [100, 1000], 'criterion': ['log_loss'], 'bootstrap': [False]})
     rf_estimator, rf_params = classifier.train()  # train the model
     print("Best random forest params: ", rf_params)  # print the best hyperparameters
     print(classification_report(classifier.y_test, classifier.test()))  # print the classification report
     df = classifier.get_results()  # get the results of the grid search
-    df.to_excel('random_forest.xlsx')  # save the results to an Excel file
+    df.to_excel('results/random_forest.xlsx')  # save the results to an Excel file
     df.plot()  # plot the results
 
 
