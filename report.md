@@ -40,7 +40,8 @@ There are several hyperparameters that we can tune:
   high values meaning 'close'. It can be seen as the inverse of the radius of influence of samples selected by the model
   as support vectors.
 
-* `coef0`: This is the independent term in the kernel function. It is only significant in 'poly' and 'sigmoid'.
+* `coef0`: This is the independent term in the kernel function. It is only significant in 'poly' and 'sigmoid'. If gamma
+  is 0, then coef0 controls the bias effect. Otherwise, the larger gamma is, the higher the bias and the lower the variance.
 
 There are several alternatives for hyperparameter tuning, but for binary classification problems, the most simple ones
 are:
