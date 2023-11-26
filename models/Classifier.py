@@ -5,11 +5,11 @@ import pandas as pd
 
 class Classifier:
     def __init__(self):
-        x, y = fetch_openml('mnist_784', version=1, return_X_y=True)  # load data
-        y = y.astype(int)  # convert string to int
-        x = x / 255.  # normalize data
+        self.X, self.y = fetch_openml('mnist_784', version=1, return_X_y=True)  # load data
+        self.y = self.y.astype(int)  # convert string to int
+        self.X = self.X / 255.  # normalize data
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            x, y, test_size=10000, random_state=42)  # split data
+            self.X, self.y, test_size=10000, random_state=42)  # split data
         self.results = None
         self.model = None
 
