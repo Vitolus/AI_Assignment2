@@ -41,19 +41,18 @@ There are several hyperparameters that we can tune:
   as support vectors.
 
 * `coef0`: This is the independent term in the kernel function. It is only significant in 'poly' and 'sigmoid'. If gamma
-  is 0, then coef0 controls the bias effect. Otherwise, the larger gamma is, the higher the bias and the lower the variance.
+  is 0, then coef0 controls the bias effect. Otherwise, the larger gamma is, the higher the bias and the lower the
+  variance.
 
-There are several alternatives for hyperparameter tuning, but for binary classification problems, the most simple ones
-are:
+In the process of hyperparameter tuning, we use a combination of trial repetition and cross-validation by adjusting the
+`n_trials` and `cv` parameters of the classifier:
 
-* **Grid search**: it is an exhaustive search over specified parameter values for an estimator. It is done by using the
-  `GridSearchCV` class, which takes a dictionary that describes the parameters that could be tried on a model to train
-  it. The grid search then trains the model with each combination of parameters and returns the best one.
+* `n_trials`: The number of trials to run per hyperparameter set. In each trial, a different set of hyperparameters is
+  chosen and used to train the model. The performance of the model is then evaluated. This process is repeated for the
+  specified number of trials, with the goal of finding the set of hyperparameters that gives the best performance.
 
-* **Random search**: it is an alternative to grid search. It is a technique where random combinations of the
-  hyperparameters are used to find the best solution for the built model. It is done by using the `RandomizedSearchCV`
-  class, which takes a dictionary that describes the parameters that could be tried on a model to train it. The random
-  search then trains the model with a random combination of parameters and returns the best one.
+* `cv`: The number of folds to use for cross-validation. Each subset serves as the validation set for the model trained
+  on the remaining data. This helps in assessing the performance of the model with the given set of hyperparameters.
 
 ### 3.1.1. Linear kernel
 
