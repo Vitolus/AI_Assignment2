@@ -9,7 +9,7 @@ class Classifier:
         y = y.astype(int)  # convert string to int
         x = x / 255.  # normalize data
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            x, y, test_size=10000, random_state=42)  # split data
+            x, y, test_size=10000, random_state=1)  # split data
         self.results = None
         self.model = None
 
