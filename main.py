@@ -1,11 +1,10 @@
 import models.LinearSvm as LSvm
 import models.Svm as Svm
 import models.RandForest as Rf
-import models.Svc as Svc
+import models.LinearSvc as LSvc
 from sklearn.metrics import classification_report
 from sklearn.datasets import load_breast_cancer
 from atom import ATOMClassifier
-from sklearn.datasets import fetch_openml
 
 
 def linear_svm():
@@ -44,23 +43,24 @@ def random_forest():
     df = classifier.get_results()  # get the results of the grid search
     df.to_excel('results/random_forest.xlsx')  # save the results to an Excel file
 
-def svc():
-    classifier = Svc.Svc()  # create an instance of the Svc class
-    svc_params = classifier.train()  # train the model
-    print("Best svc params: ", svc_params)  # print the best hyperparameters
 
-## TEST METHOD FOR ATOM-ML AND CUML LIBRARIES
+def svc():
+    classifier = LSvc.LinearSvc()  # create an instance of the Svc class
+    classifier.train()  # train the model
+
+
+# TEST METHOD FOR ATOM-ML AND CUML LIBRARIES
 def atom_test():
-    # X, y = load_breast_cancer(return_X_y=True, as_frame=True)
-    X, y = fetch_openml('mnist_784', version=1, return_X_y=True)  # load data
-    y = y.astype(int)  # convert string to int
-    X = X / 255.  # normalize data
+    X, y = load_breast_cancer(return_X_y=True, as_frame=True)
+    # X, y = fetch_openml('mnist_784', version=1, return_X_y=True)  # load data
+    # y = y.astype(int)  # convert string to int
+    # X = X / 255.  # normalize data
     # Initialize atom
-    atom = ATOMClassifier(X, y, n_jobs=-1, logger="auto" , device="gpu", engine="cuml", verbose=2)
+    atom = ATOMClassifier(X, y, n_jobs=-1, logger="auto", device="gpu", engine="cuml", verbose=2)
     atom.feature_selection(strategy="pca")
     # Train models
     atom.run(
-        models=["LR", "RF", "XGB"],
+        models=["RF", "SVM", "XGB"],
         metric="accuracy"
     )
     # Analyze the results
@@ -74,4 +74,3 @@ if __name__ == '__main__':
     # poly_svm()  # call the poly_svm function
     # rbf_svm()  # call the rbf_svm function
     # random_forest()  # call the random_forest function
-

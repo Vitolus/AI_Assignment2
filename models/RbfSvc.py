@@ -1,9 +1,9 @@
-from optuna.distributions import FloatDistribution, CategoricalDistribution
+from optuna.distributions import FloatDistribution
 from sklearn.datasets import fetch_openml
 from atom import ATOMClassifier
 
 
-class Svc():
+class RbfSvc:
 
     def __init__(self):
         X, y = fetch_openml('mnist_784', version=1, return_X_y=True)  # load data
@@ -14,22 +14,22 @@ class Svc():
         self.results = None
 
     def train(self):
-        self.model.feature_selection(strategy="pca")
+        self.model.feature_selection(strategy="pca", solver="full")
         self.model.run(
             models="SVM",
             metric="accuracy",
-            errors="raise",
-            # n_trials=10,
-            # est_params={
-            #     "degree": 2,
-            # },
-            # ht_params={
-            #     "distributions": {"all": {
-            #         "C": FloatDistribution(high=10.0, log=True, low=0.01, step=None),
-            #         "kernel": CategoricalDistribution(choices=('linear', 'poly', 'rbf')),
-            #
-            #     }},
-            # }
+            n_trials=10,
+            parallel=True,
+            est_params={
+                "kernel": "rbf",
+                "gamma": "scale",
+                "shrinking": True,
+                "probability": False,
+            },
+            ht_params={
+                "distributions": {
+                    "C": FloatDistribution(high=10.0, log=True, low=0.01, step=None),
+                },
+            }
         )
         self.results = self.model.evaluate()
-        return self.model.svm.best_params
