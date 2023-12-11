@@ -1,20 +1,13 @@
 from optuna.distributions import FloatDistribution
-from sklearn.datasets import fetch_openml
-from atom import ATOMClassifier
+from  models.Classifier import Classifier
 
 
-class PolySvc:
-
+class PolySvc(Classifier):
     def __init__(self):
-        X, y = fetch_openml('mnist_784', version=1, return_X_y=True)  # load data
-        y = y.astype(int)  # convert string to int
-        X = X / 255.  # normalize data
-        self.model = ATOMClassifier(X, y, test_size=10000, n_jobs=-1, logger="auto",
-                                    device="gpu", engine="cuml", verbose=2, random_state=1)
-        self.results = None
+        super().__init__()
 
     def train(self):
-        self.model.feature_selection(strategy="pca", solver="full")
+        super().train()
         self.model.run(
             models="SVM",
             metric="accuracy",
@@ -29,7 +22,7 @@ class PolySvc:
             },
             ht_params={
                 "distributions": {
-                    "C": FloatDistribution(high=10.0, log=True, low=0.01, step=None),
+                    "C": FloatDistribution(high=1.0, log=True, low=0.001, step=None),
                     "coef0": FloatDistribution(high=1.0, log=False, low=-1.0, step=None),
                 },
             }
