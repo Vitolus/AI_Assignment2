@@ -25,7 +25,7 @@ def random_forest():
     classifier.train()
 
 def knn():
-    classifier = Knn.Knn(n_neighbors=5)
+    classifier = Knn.KNearestNeighbor(n_neighbors=5)
     classifier.fit()
     classifier.predict()
 

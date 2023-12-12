@@ -17,17 +17,12 @@ class Knn:
         # Use a subset of the data (10,000 samples) for both training and testing
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=10000, random_state=1)
 
+    def fit(self):
         # Convert data to cupy arrays for GPU operations
         self.X_train = cp.array(self.X_train)
         self.y_train = cp.array(self.y_train)
         self.X_test = cp.array(self.X_test)
         self.y_test = cp.array(self.y_test)
-
-# TODO: fix parameter, should be self.X_train and self.y_train, but error
-    def fit(self, X_train, y_train):
-        # Convert data to cupy arrays for GPU operations
-        self.X_train = cp.array(X_train)
-        self.y_train = cp.array(y_train)
 
         # Perform 10-fold cross-validation
         kf = KFold(n_splits=10, shuffle=True, random_state=1)
@@ -55,7 +50,8 @@ class Knn:
         average_accuracy = cp.mean(cp.array(accuracy_list))
         print(f'Average Cross-Validation Accuracy: {average_accuracy.get()}')
 
-    def test(self):
+    def predict(self):
+        # TODO: should not use X_train?
         # Compute pairwise distances
         distances = pairwise_distances(self.X_test, self.X_train)
 
