@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split, KFold
 from scipy.special import gamma
 from sklearn.metrics import accuracy_score
 import time
+import matplotlib.pyplot as plt
 
 
 class NaiveBayes:
@@ -37,21 +38,23 @@ class NaiveBayes:
             y_fold_train, y_fold_val = self.y_train.take(train_index), self.y_train.take(val_index)
             self.params = []
             for i, c in enumerate(self.classes):
-                X_where_c = X_fold_train[cp.where(y_fold_train == c)]
-                E_X = cp.mean(X_where_c, axis=0)
-                Var_X = cp.var(X_where_c, axis=0)
-                K = (E_X * (1 - E_X)) / Var_X - 1
-                alpha = K*E_X
-                beta = K*(1-E_X)
-                self.params.append((alpha, beta))
-            N = X_fold_val.shape[0]
-            C = len(self.classes)
-            P = cp.zeros((N, C))
+                X_where_c = X_fold_train[cp.where(y_fold_train == c)]  # Get all training samples with label c
+                E_X = cp.mean(X_where_c, axis=0)  # Compute the mean of each pixel
+                Var_X = cp.var(X_where_c, axis=0)  # Compute the variance of each pixel
+                K = ((E_X * (1 - E_X)) / Var_X) - 1  # Compute the K value for each pixel
+                alpha = K * E_X  # Compute the alpha value for each pixel
+                beta = K * (1 - E_X)  # Compute the beta value for each pixel
+                self.params.append((alpha, beta))  # Store the parameters for this class
+            self._visualize()
+            N = X_fold_val.shape[0]  # Number of samples in validation set
+            C = len(self.classes)  # Number of classes
+            P = cp.zeros((N, C))  # Initialize matrix of probabilities
             for i in range(C):
-                alpha, beta = self.params[i]
+                alpha, beta = self.params[i]  # Get the parameters for class i
+                # Compute the log of the probability of each pixel for class i
                 P[:, i] = cp.sum(cp.log(gamma(alpha + beta)) - cp.log(gamma(alpha)) - cp.log(gamma(beta)) + (alpha - 1)
                                  * cp.log(X_fold_val) + (beta - 1) * cp.log(1 - X_fold_val), axis=1)
-            y_pred_val = self.classes[cp.argmax(P, axis=1)]
+            y_pred_val = self.classes[cp.argmax(P, axis=1)]  # Make predictions by choosing the most probable class
             # Compute accuracy for this fold
             accuracy_fold = accuracy_score(y_fold_val.get(), y_pred_val.get())
             accuracy_list.append(accuracy_fold)
@@ -70,14 +73,27 @@ class NaiveBayes:
 
     def predict(self):
         start_time = time.perf_counter()
-        N = self.X_test.shape[0]
-        C = len(self.classes)
-        P = cp.zeros((N, C))
+        N = self.X_test.shape[0]  # Number of samples in test set
+        C = len(self.classes)  # Number of classes
+        P = cp.zeros((N, C))  # Initialize matrix of probabilities
         for i in range(C):
-            alpha, beta = self.params[i]
+            alpha, beta = self.params[i]  # Get the parameters for class i
+            # Compute the log of the probability of each pixel for class i
             P[:, i] = cp.sum(cp.log(gamma(alpha + beta)) - cp.log(gamma(alpha)) - cp.log(gamma(beta)) + (alpha - 1)
                              * cp.log(self.X_test) + (beta - 1) * cp.log(1 - self.X_test), axis=1)
-        y_pred_test = self.classes[cp.argmax(P, axis=1)]
+        y_pred_test = self.classes[cp.argmax(P, axis=1)]  # Make predictions by choosing the most probable class
         accuracy = accuracy_score(self.y_test.get(), y_pred_test.get())
         print(f'Test Set time: {time.perf_counter() - start_time} seconds')
         print(f'Test Set Accuracy: {accuracy}')
+
+    def _visualize(self):
+        # Compute the mean of the Beta distribution for each pixel
+        means = cp.array([a / (a + b) for a, b in self.params])
+        # Reshape the means into 28x28 images
+        images = means.reshape(-1, 28, 28)
+        # Plot the images
+        fig, axs = plt.subplots(2, 5, figsize=(10, 4))
+        for i, ax in enumerate(axs.flat):
+            ax.imshow(images[i], cmap='gray')
+            ax.axis('off')
+        plt.show()
