@@ -1,8 +1,8 @@
 import cupy as cp
 from sklearn.datasets import fetch_openml
-from cuml.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
-from cuml.metrics import pairwise_distances
+from sklearn.metrics import pairwise_distances, accuracy_score
 
 
 class Knn:
@@ -33,17 +33,20 @@ class Knn:
             y_fold_train, y_fold_val = self.y_train.take(train_index), self.y_train.take(val_index)
 
             # Compute pairwise distances
-            distances = pairwise_distances(X_fold_val, X_fold_train)
+            distances = pairwise_distances(X_fold_val.get(), X_fold_train.get())
 
             # Find k-nearest neighbors
             knn_indices = cp.argpartition(distances, kth=self.n_neighbors, axis=1)[:, :self.n_neighbors]
             knn_labels = cp.take(y_fold_train, knn_indices)
 
             # Make predictions by choosing the most common label among neighbors
-            y_pred_val = cp.argmax(cp.bincount(knn_labels), axis=1)
+            y_pred_val = []
+            for labels in knn_labels:
+                y_pred_val.append(cp.argmax(cp.bincount(labels)))
+            y_pred_val = cp.array(y_pred_val)
 
             # Compute accuracy for this fold
-            accuracy_fold = cp.sum(y_pred_val == y_fold_val) / len(y_fold_val)
+            accuracy_fold = accuracy_score(y_fold_val.get(), y_pred_val.get())
             accuracy_list.append(accuracy_fold)
 
         # Compute average accuracy across all folds
@@ -51,17 +54,19 @@ class Knn:
         print(f'Average Cross-Validation Accuracy: {average_accuracy.get()}')
 
     def predict(self):
-        # TODO: should not use X_train?
         # Compute pairwise distances
-        distances = pairwise_distances(self.X_test, self.X_train)
+        distances = pairwise_distances(self.X_test.get(), self.X_train.get())
 
         # Find k-nearest neighbors
         knn_indices = cp.argpartition(distances, kth=self.n_neighbors, axis=1)[:, :self.n_neighbors]
         knn_labels = cp.take(self.y_train, knn_indices)
 
         # Make predictions by choosing the most common label among neighbors
-        y_pred_test = cp.argmax(cp.bincount(knn_labels), axis=1)
+        y_pred_test = []
+        for labels in knn_labels:
+            y_pred_test.append(cp.argmax(cp.bincount(labels)))
+        y_pred_test = cp.array(y_pred_test)
 
         # Compute accuracy on the test set
-        test_accuracy = cp.sum(y_pred_test == self.y_test) / len(self.y_test)
-        print(f'Test Set Accuracy: {test_accuracy.get()}')
+        test_accuracy = accuracy_score(self.y_test.get(), y_pred_test.get())
+        print(f'Test Set Accuracy: {test_accuracy}')

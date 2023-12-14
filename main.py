@@ -2,7 +2,7 @@ from models import (LinearSvc as LSvc,
                     PolySvc as PSvc,
                     RbfSvc as RSvc,
                     RandForest as RForest,
-                    Knn as Knn)
+                    Knn)
 
 
 def linear_svc():
@@ -24,8 +24,9 @@ def random_forest():
     classifier = RForest.RandForest()
     classifier.train()
 
-def knn():
-    classifier = Knn.KNearestNeighbor(n_neighbors=5)
+
+def k_nn():
+    classifier = Knn.Knn(n_neighbors=5)
     classifier.fit()
     classifier.predict()
 
@@ -34,4 +35,5 @@ if __name__ == '__main__':
     # linear_svc()
     # poly_svc()
     # rbf_svc()
-    random_forest()  # call the random_forest function
+    # random_forest()
+    k_nn()
