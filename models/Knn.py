@@ -3,6 +3,7 @@ from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 from sklearn.metrics import pairwise_distances, accuracy_score
+import time
 
 
 class Knn:
@@ -28,7 +29,9 @@ class Knn:
         kf = KFold(n_splits=10, shuffle=True, random_state=1)
 
         accuracy_list = []
+        iteration = 0
         for train_index, val_index in kf.split(self.X_train):
+            start_time = time.perf_counter()
             X_fold_train, X_fold_val = self.X_train.take(train_index, axis=0), self.X_train.take(val_index, axis=0)
             y_fold_train, y_fold_val = self.y_train.take(train_index), self.y_train.take(val_index)
 
@@ -48,12 +51,16 @@ class Knn:
             # Compute accuracy for this fold
             accuracy_fold = accuracy_score(y_fold_val.get(), y_pred_val.get())
             accuracy_list.append(accuracy_fold)
+            print(f'Training Fold {iteration} time: {time.perf_counter() - start_time} seconds')
+            print(f'Training Fold {iteration} Accuracy: {accuracy_fold}')
+            iteration += 1
 
         # Compute average accuracy across all folds
         average_accuracy = cp.mean(cp.array(accuracy_list))
-        print(f'Average Cross-Validation Accuracy: {average_accuracy.get()}')
+        print(f'Average Training Cross-Validation Accuracy: {average_accuracy.get()}')
 
     def predict(self):
+        start_time = time.perf_counter()
         # Compute pairwise distances
         distances = pairwise_distances(self.X_test.get(), self.X_train.get())
 
@@ -69,4 +76,5 @@ class Knn:
 
         # Compute accuracy on the test set
         test_accuracy = accuracy_score(self.y_test.get(), y_pred_test.get())
+        print(f'Test Set time: {time.perf_counter() - start_time} seconds')
         print(f'Test Set Accuracy: {test_accuracy}')
