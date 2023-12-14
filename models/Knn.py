@@ -17,10 +17,8 @@ class Knn:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=10000,
                                                                                 random_state=1)
         # Convert data to cupy arrays for GPU operations
-        self.X_train = cp.array(self.X_train)
-        self.y_train = cp.array(self.y_train)
-        self.X_test = cp.array(self.X_test)
-        self.y_test = cp.array(self.y_test)
+        self.X_train, self.y_train, self.X_test, self.y_test = map(cp.asarray, [self.X_train, self.y_train,
+                                                                                self.X_test, self.y_test])
 
     def fit(self):
         # Perform 10-fold cross-validation
