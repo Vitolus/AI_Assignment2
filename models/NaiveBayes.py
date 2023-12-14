@@ -46,7 +46,7 @@ class NaiveBayes:
             accuracy_fold = accuracy_score(y_fold_val.get(), y_pred_val.get())  # Compute accuracy
             accuracy_list.append(accuracy_fold)
             print(f'Training Fold {iteration} time: {time.perf_counter() - start_time} seconds')
-            print(f'Training Fold {iteration} Accuracy: {1 - accuracy_fold}')
+            print(f'Training Fold {iteration} Accuracy: {accuracy_fold}')
             # If this fold's accuracy is the best so far, store its parameters
             if accuracy_fold > best_accuracy:
                 best_accuracy = accuracy_fold
@@ -56,7 +56,7 @@ class NaiveBayes:
         self.params = best_params
         # Compute average accuracy across all folds
         average_accuracy = cp.mean(cp.array(accuracy_list))
-        print(f'Average Training Cross-Validation Accuracy: {1 - average_accuracy.get()}')
+        print(f'Average Training Cross-Validation Accuracy: {average_accuracy.get()}')
 
     def predict(self, X):
         N = X.shape[0]
@@ -64,9 +64,8 @@ class NaiveBayes:
         P = cp.zeros((N, C))
         for i in range(C):
             alpha, beta = self.params[i]
-            P[:, i] = cp.sum(
-                cp.log(gamma(alpha + beta)) - cp.log(gamma(alpha)) - cp.log(gamma(beta)) + (alpha - 1) * cp.log(X) +
-                (beta - 1) * cp.log(1 - X), axis=1)
+            P[:, i] = cp.sum((gamma(alpha + beta) / (gamma(alpha) * gamma(beta))) * (X ** (alpha - 1)) *
+                             ((1 - X) ** (beta - 1)), axis=1)
         return self.classes[cp.argmax(P, axis=1)]
 
     def _visualize(self):

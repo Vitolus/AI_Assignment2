@@ -41,7 +41,12 @@ def naive_bayes():
     start_time = time.perf_counter()
     y_pred_test = classifier.predict(classifier.X_test)
     print(f'Testing time: {time.perf_counter() - start_time} seconds')
-    print("Test accuracy:", 1 - accuracy_score(classifier.y_test.get(), y_pred_test.get()))
+    print("Test accuracy:", accuracy_score(classifier.y_test.get(), y_pred_test.get()))
+
+
+def naive_bayes2():
+    classifier = NB2.NaiveBayes2()
+    classifier.cross_validate()
 
 
 if __name__ == '__main__':
