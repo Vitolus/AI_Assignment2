@@ -28,6 +28,8 @@ class NaiveBayes:
         # Perform 10-fold cross-validation
         kf = KFold(n_splits=10, shuffle=True, random_state=1)
         accuracy_list = []
+        best_accuracy = 0
+        best_params = None
         iteration = 0
         for train_index, val_index in kf.split(self.X_train):
             start_time = time.perf_counter()
@@ -55,7 +57,13 @@ class NaiveBayes:
             accuracy_list.append(accuracy_fold)
             print(f'Training Fold {iteration} time: {time.perf_counter() - start_time} seconds')
             print(f'Training Fold {iteration} Accuracy: {accuracy_fold}')
+            # If this fold's accuracy is the best so far, store its parameters
+            if accuracy_fold > best_accuracy:
+                best_accuracy = accuracy_fold
+                best_params = self.params
             iteration += 1
+        # After all folds, set the model's parameters to the best ones found
+        self.params = best_params
         # Compute average accuracy across all folds
         average_accuracy = cp.mean(cp.array(accuracy_list))
         print(f'Average Training Cross-Validation Accuracy: {average_accuracy.get()}')

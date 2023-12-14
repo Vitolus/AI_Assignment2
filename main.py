@@ -2,7 +2,8 @@ from models import (LinearSvc as LSvc,
                     PolySvc as PSvc,
                     RbfSvc as RSvc,
                     RandForest as RForest,
-                    Knn)
+                    Knn,
+                    NaiveBayes as NB)
 
 
 def linear_svc():
@@ -31,9 +32,16 @@ def k_nn():
     classifier.predict()
 
 
+def naive_bayes():
+    classifier = NB.NaiveBayes()
+    classifier.fit()
+    classifier.predict()
+
+
 if __name__ == '__main__':
     # linear_svc()
     # poly_svc()
     # rbf_svc()
     # random_forest()
-    k_nn()
+    # k_nn()
+    naive_bayes()
