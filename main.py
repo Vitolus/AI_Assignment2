@@ -44,11 +44,6 @@ def naive_bayes():
     print("Test accuracy:", accuracy_score(classifier.y_test.get(), y_pred_test.get()))
 
 
-def naive_bayes2():
-    classifier = NB2.NaiveBayes2()
-    classifier.cross_validate()
-
-
 if __name__ == '__main__':
     # linear_svc()
     # poly_svc()
