@@ -1,3 +1,4 @@
+from atom.feature_engineering import FeatureSelector
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split, KFold
 import cupy as cp
@@ -16,10 +17,14 @@ class NaiveBayes:
         X, y = fetch_openml('mnist_784', version=1, return_X_y=True)
         X = X / 255.  # normalize data
         y = y.astype(int)  # convert string to int
-
-        # Split the data into training and testing sets
+        # Feature selection
+        selector = FeatureSelector(strategy="pca", solver="full", n_jobs=-1, device="gpu", engine="cuml", verbose=2,
+                                   random_state=1)
+        self.X_train = selector.fit_transform(X, y)
+        # Use a subset of the data (10,000 samples) for both training and testing
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=10000,
                                                                                 random_state=1)
+        # Convert data to cupy arrays for GPU operations
         self.X_train, self.y_train, self.X_test, self.y_test = map(cp.asarray, [self.X_train, self.y_train,
                                                                                 self.X_test, self.y_test])
 

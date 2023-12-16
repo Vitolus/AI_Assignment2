@@ -1,5 +1,5 @@
 from optuna.distributions import FloatDistribution
-from  models.Classifier import Classifier
+from models.Classifier import Classifier
 
 
 class PolySvc(Classifier):

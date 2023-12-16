@@ -8,12 +8,7 @@ Train the following classifiers on the dataset:
 * SVM using linear, polynomial of degree 2, and RBF kernels;
 * Random forests
 * Naive Bayes classifier where each pixel is distributed according to a Beta distribution of parameters &alpha;,
-  &beta;:\
-  d(x; a, b)=
-  <div class="frac"><span>&Gamma;(&alpha;+&beta;)</span>
-    <span class="symbol">/</span>
-    <span class="bottom">&Gamma;(&alpha;)&Gamma;(&beta;)</span></div>
-  x<sup>&alpha;-1</sup>(1-x)<sup>&beta;-1</sup>
+  &beta;: ![nb_formula](img/nb_formula.png)
 * k-NN
 
 Use 10 way cross validation to optimize the parameters for each classifier.
