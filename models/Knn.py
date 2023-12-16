@@ -3,6 +3,7 @@ from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.metrics import pairwise_distances, accuracy_score
 import time
+from atom.feature_engineering import FeatureSelector
 
 
 class Knn:
@@ -13,6 +14,10 @@ class Knn:
         y = y.astype(int)  # convert string to int
         X = X / 255.  # normalize data
         self.n_neighbors = n_neighbors
+        # Feature selection
+        selector = FeatureSelector(strategy="pca", solver="full", n_jobs=-1, device="gpu", engine="cuml", verbose=2,
+                                   random_state=1)
+        self.X_train = selector.fit_transform(X, y)
         # Use a subset of the data (10,000 samples) for both training and testing
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=10000,
                                                                                 random_state=1)

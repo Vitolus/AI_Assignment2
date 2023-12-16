@@ -1,12 +1,10 @@
-from sklearn.metrics import accuracy_score
-import time
-
 from models import (LinearSvc as LSvc,
                     PolySvc as PSvc,
                     RbfSvc as RSvc,
                     RandForest as RForest,
                     Knn,
-                    NaiveBayes as NB)
+                    NaiveBayes as NB,
+                    )
 
 
 def linear_svc():
@@ -37,11 +35,7 @@ def k_nn():
 
 def naive_bayes():
     classifier = NB.NaiveBayes()
-    classifier.fit()
-    start_time = time.perf_counter()
-    y_pred_test = classifier.predict(classifier.X_test)
-    print(f'Testing time: {time.perf_counter() - start_time} seconds')
-    print("Test accuracy:", accuracy_score(classifier.y_test.get(), y_pred_test.get()))
+    classifier.train()
 
 
 if __name__ == '__main__':
