@@ -39,9 +39,9 @@ def naive_bayes():
 
 
 if __name__ == '__main__':
-    linear_svc()
-    poly_svc()
+    # linear_svc()
     rbf_svc()
-    random_forest()
-    k_nn()
-    naive_bayes()
+    poly_svc()
+    # random_forest()
+    # k_nn()
+    # naive_bayes()
