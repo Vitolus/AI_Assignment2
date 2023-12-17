@@ -8,6 +8,7 @@ class RbfSvc(Classifier):
         super().__init__()
         self.model = ATOMClassifier(self.X, self.y, test_size=10000, n_jobs=-1, n_rows=40000,
                                     device="gpu", engine="cuml", verbose=2, random_state=1)
+
     def train(self):
         super().train()
         self.model.run(
